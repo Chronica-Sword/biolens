@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioLens | Giriş</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <div class="login-container glass-panel">
+        <div class="logo">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-hexagon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <h1>BioLens</h1>
+        </div>
+        <p class="subtitle">Biyoteknoloji Literatür Okuma Platformu</p>
+        
+        <form action="/login" method="POST" class="login-form">
+            <div class="input-group">
+                <input type="password" name="password" id="password" required placeholder=" ">
+                <label for="password">Ortak Giriş Şifresi</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">İçeri Gir</button>
+        </form>
+    </div>
+</body>
+</html>

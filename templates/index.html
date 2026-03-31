@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioLens | GenOkur Pano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <header class="app-header">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="feather feather-hexagon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <h2>BioLens</h2>
+        </div>
+        
+        <form class="new-article-form" id="new-article-form">
+            <div class="input-group" style="margin:0;">
+                <input type="text" id="doi" placeholder=" " required style="padding: 10px; width:300px;">
+                <label for="doi">PubMed ID veya DOI Ekle...</label>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 20px;">+</button>
+        </form>
+        
+        <a href="/logout" class="btn" style="width:auto; background: rgba(255,255,255,0.1); color:white;">Çıkış</a>
+    </header>
+
+    <main class="kanban-board">
+        <!-- Sunucu tarafından render edilen makaleler data-id vb tutacak -->
+        
+        <div class="kanban-column col-toread glass-panel">
+            <div class="column-header">
+                <span>Okunacaklar</span>
+                <span class="badge" id="count-toread">0</span>
+            </div>
+            <div class="kanban-list" id="toread" data-status="toread">
+                {% for a in articles %}
+                    {% if a.status == 'toread' %}
+                        <div class="article-card glass-panel" data-id="{{ a.id }}">
+                            <div class="card-title">{{ a.title }}</div>
+                            <div class="card-meta">{{ a.journal }} • {{ a.authors }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="kanban-column col-reading glass-panel">
+            <div class="column-header">
+                <span>Metodolojisi İncelenenler</span>
+                <span class="badge" id="count-reading">0</span>
+            </div>
+            <div class="kanban-list" id="reading" data-status="reading">
+                {% for a in articles %}
+                    {% if a.status == 'reading' %}
+                        <div class="article-card glass-panel" data-id="{{ a.id }}">
+                            <div class="card-title">{{ a.title }}</div>
+                            <div class="card-meta">{{ a.journal }} • {{ a.authors }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="kanban-column col-used glass-panel">
+            <div class="column-header">
+                <span>Tezde Kullanılacaklar</span>
+                <span class="badge" id="count-used">0</span>
+            </div>
+            <div class="kanban-list" id="used" data-status="used">
+                {% for a in articles %}
+                    {% if a.status == 'used' %}
+                        <div class="article-card glass-panel" data-id="{{ a.id }}">
+                            <div class="card-title">{{ a.title }}</div>
+                            <div class="card-meta">{{ a.journal }} • {{ a.authors }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal -->
+    <div class="modal-overlay" id="article-modal">
+        <div class="modal-content glass-panel" style="background: var(--bg-dark);">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <h2 id="modal-title">Makale Başlığı</h2>
+                    <div class="modal-authors" id="modal-authors">Yazarlar, Dergi</div>
+                </div>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="ai-section">
+                    <div class="ai-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Yapay Zeka Okuma Asistanı (Gemini AI)
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="difficulty-slider" style="font-size:0.85rem; color: #cbd5e1;">Okuma Zorluk Seviyesi</label>
+                        <input type="range" id="difficulty-slider" min="0" max="1" value="1" step="1">
+                        <div class="slider-labels">
+                            <span>Lisans</span>
+                            <span>Alan Uzmanı (Orijinal)</span>
+                        </div>
+                    </div>
+                    
+                    <div id="ai-content-box" style="font-size:0.95rem; line-height: 1.6; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 6px;">
+                        <!-- İçerik -->
+                    </div>
+                </div>
+                
+                <div class="notes-section">
+                    <h3 style="margin-bottom: 10px; font-size:1.1rem;">Şahsi Notlarım</h3>
+                    <div class="input-group">
+                        <textarea id="modal-notes" placeholder="Bu makaledeki yöntemler benim hücre hatlarımla uyuşmuyor..."></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="save-notes-btn">Notları Kaydet</button>
+                        <button class="btn" style="background: rgba(255,255,255,0.1); color:white;" id="copy-bibtex-btn">BibTeX Kopyala</button>
+                        <button class="btn btn-danger" style="margin-left: auto; width: auto;" id="delete-article-btn">Makaleyi Sil</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip Element -->
+    <div id="tooltip-box"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

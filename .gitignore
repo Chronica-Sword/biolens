@@ -1,0 +1,23 @@
+# Dependencies
+venv/
+__pycache__/
+*.pyc
+
+# Environment & secrets
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Database (local only)
+bioread.db
+
+# Debug / test files
+chk.py
+chk2.py
+debug_api.py
+error.txt
+test_gemini.py
+test_summarize.py
+test_summarize_hardcoded.py
